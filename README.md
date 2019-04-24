@@ -26,6 +26,10 @@ Here is a `docker run` command that will spin up a basic container with a few cu
 
 `docker logs mcpe1`
 
+## Set selinux context for mounted volumes
+
+`chcon -Rt svirt_sandbox_file_t /path/to/volume`
+
 ## List of environment variables and their defaults
 * UID=1000
 * GUID=1000
