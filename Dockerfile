@@ -3,10 +3,11 @@ LABEL author="Nathan Snow"
 LABEL description="Minecraft Pocket Edition (Minecraft PE or Minecraft Bedrock) server"
 
 WORKDIR /minecraft
-ARG REV=1.11.0.23
+ARG VER=1.11.0.23
+ENV REV=$VER
 ENV LD_LIBRARY_PATH=.
 ENV MCPE_HOME=/minecraft
-ENV BRSRVDIR=bedrock-server-$REV
+ENV BRSRVDIR=bedrock-server-$VER
 ENV UID=1000
 ENV GUID=1000
 ENV LEVEL=world \
@@ -39,7 +40,7 @@ RUN apt-get -y update && apt-get -y install \
     libcurl4 \
     libssl1.0.0
 
-RUN curl https://minecraft.azureedge.net/bin-linux/bedrock-server-${REV}.zip --output /tmp/${BRSRVDIR}.zip && \
+RUN curl https://minecraft.azureedge.net/bin-linux/bedrock-server-${VER}.zip --output /tmp/${BRSRVDIR}.zip && \
     unzip /tmp/${BRSRVDIR}.zip -d /tmp/${BRSRVDIR} && \
     rm -fv /tmp/${BRSRVDIR}.zip
 

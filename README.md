@@ -1,21 +1,55 @@
 # minecraft-bedrock
 Run a bedrock server in a Docker container
 
+
 This Dockerfile will download the Bedrock Server app and set it up, along with its dependencies.
 
-If you run the container as is, the `worlds` directory will be created inside the container, which is unadvisable. It is highly recommended that you store your worlds outside the container using a mount. It is also likely that you will want to customize your `server.properties` file. The best way to do this is also using a `server.properties` file outside the container using a mount.
+If you run the container as is, the `worlds` directory will be created inside the container, which is unadvisable. It is highly recommended that you store your worlds outside the container using a mount (see the example below).
 
-Here is a `docker run` command that will do that, assuming you have a `worlds` directory and `server.properties` file at `/minecraft`. (You should change the path to wherever your stuff is.)
+It is also likely that you will want to customize your `server.properties` file. The best way to do this is also using the `-e <environment var>:<value>` for each setting in the `server.properties`.
 
-    $ sudo docker run -d --name=minecraft\
-        -v '/minecraft/worlds:/bedrock-server/worlds'\
-        -v '/minecraft/server.properties:/bedrock-server/server.properties'\
-        --network host\
-        --restart=always\
-        nguyer/bedrock-server
+## Example
+Here is a `docker run` command that will spin up a basic container with a few customized `server.properties`.
 
-If you wanted to use custom resource packs, a whitelist, or other things, you could also mount those paths as well. Separating the content from the sever executable means that you can safely destroy your Docker container without losing your world. This will come in handy when there are updates to the server app, and you want to redeploy the container.
+ $ `docker run -d -it --name=mcpe1 -v /opt/mcpe:/minecraft -p 19132-19132:19133-19133/udp -p 19132-19132:19133-19133/tcp -e FLY=true -e OPS=usernameOne,usernameTwo-e ONLINE=false -e CHEATS=true -e SERVERNAME=mcpe.example.org nsnow/bedrock-server:latest`
 
-Hopefully this is helpful to folks. Happy Minecrafting!
 
- -- nguyer
+## Additional Docker commands
+
+`docker kill $(docker ps -qa); docker rm $(docker ps -qa)`
+
+`docker logs mcpe1`
+
+## List of environment variables and their defaults
+UID=1000
+GUID=1000
+LEVEL=world
+PVP=true
+VDIST=10
+OPPERM=4
+NETHER=true
+FLY=false
+MAXBHEIGHT=256
+NPCS=true
+WLIST=false
+ANIMALS=true
+HC=false
+ONLINE=false
+RPACK=''
+DIFFICULTY=3
+CMDBLOCK=false
+MAXPLAYERS=20
+MONSTERS=true
+STRUCTURES=true
+SPAWNPROTECTION=16
+MODE=0
+CHEATS=false
+SERVERNAME=dedicated-server
+MOTD=''
+LEVEL=''
+SEED=''
+MAX_TICK_TIME=''
+MAX_WORLD_SIZE=''
+RPACK_SHA1=''
+NETWORK_COMPRESSION_THRESHOLD=''
+
