@@ -11,7 +11,7 @@ This Dockerfile will download the Bedrock Server app and set it up, along with i
 
 If you run the container as is, the `worlds` directory will be created inside the container, which is unadvisable. It is highly recommended that you store your worlds outside the container using a mount (see the example below).
 
-It is also likely that you will want to customize your `server.properties` file. The best way to do this is also using the `-e <environment var>:<value>` for each setting in the `server.properties`.
+It is also likely that you will want to customize your `server.properties` file. The best way to do this is also using the `-e <environment var>=<value>` for each setting in the `server.properties`.
 
 ## Example
 Here is a `docker run` command that will spin up a basic container with a few customized `server.properties`.
