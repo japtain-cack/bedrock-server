@@ -7,7 +7,6 @@ Run a bedrock server in a Docker container
 [![Docker Build Status](https://img.shields.io/docker/build/nsnow/bedrock-server.svg)](https://hub.docker.com/r/nsnow/bedrock-server/builds)
 
 
-
 This Dockerfile will download the Bedrock Server app and set it up, along with its dependencies.
 
 If you run the container as is, the `worlds` directory will be created inside the container, which is unadvisable. It is highly recommended that you store your worlds outside the container using a mount (see the example below).
