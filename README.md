@@ -16,7 +16,7 @@ It is also likely that you will want to customize your `server.properties` file.
 ## Example
 Here is a `docker run` command that will spin up a basic container with a few customized `server.properties`.
 
- $ `docker run -d -it --name=mcpe1 -v /opt/mcpe:/minecraft -p 19132-19132:19133-19133/udp -p 19132-19132:19133-19133/tcp -e FLY=true -e OPS=usernameOne,usernameTwo-e ONLINE=false -e CHEATS=true -e SERVERNAME=mcpe.example.org nsnow/bedrock-server:latest`
+ $ `docker run -d -it --name=mcpe1 -v /opt/mcpe/world1:/minecraft -p 19132-19133:19132-19133/udp -p 19132-19133:19132-19133/tcp -e FLY=true -e OPS=usernameOne,usernameTwo-e ONLINE=false -e CHEATS=true -e SERVERNAME=mcpe.example.org nsnow/bedrock-server:latest`
 
 
 ## Additional Docker commands

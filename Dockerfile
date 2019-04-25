@@ -40,20 +40,22 @@ RUN apt-get -y update && apt-get -y install \
     libcurl4 \
     libssl1.0.0
 
-RUN curl https://minecraft.azureedge.net/bin-linux/bedrock-server-${VER}.zip --output /tmp/${BRSRVDIR}.zip && \
-    unzip /tmp/${BRSRVDIR}.zip -d /tmp/${BRSRVDIR} && \
-    rm -fv /tmp/${BRSRVDIR}.zip
-
 RUN groupadd -g $GUID minecraft && \
     useradd -s /bin/bash -d /minecraft -m minecraft -u $UID -g minecraft && \
-    usermod -aG sudo minecraft
+    usermod -aG sudo minecraft && \
+    echo "minecraft ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/minecraft
+
+RUN curl https://minecraft.azureedge.net/bin-linux/bedrock-server-${VER}.zip --output /tmp/${BRSRVDIR}.zip && \
+    unzip /tmp/${BRSRVDIR}.zip -d /tmp/${BRSRVDIR} && \
+    chown -R minecraft:minecraft /tmp/${BRSRVDIR} && \
+    rm -fv /tmp/${BRSRVDIR}.zip
 
 ADD ./scripts/run.sh /tmp/
 RUN chmod +x /tmp/run.sh
 
 VOLUME ["/minecraft"]
 
-USER root
+USER minecraft
 
 EXPOSE 19132/tcp
 EXPOSE 19132/udp
