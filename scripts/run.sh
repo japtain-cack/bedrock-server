@@ -11,6 +11,7 @@ cp -rf /tmp/${BRSRVDIR}/* ./ \
 # Change owner to minecraft.
 if [ "$SKIPCHMOD" != "true" ]; then
   sudo chown -R minecraft:minecraft $MCPE_HOME/
+  sudo rm -fv /etc/sudoers.d/minecraft
 else
   echo "SKIPCHMOD option enabled. If you have access issue with your files, disable it"
 fi
