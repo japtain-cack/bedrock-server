@@ -31,7 +31,9 @@ ENV LEVEL=world \
     SPAWNPROTECTION=16 \
     MODE=0 \
     CHEATS=false \
-    SERVERNAME=dedicated-server
+    SERVERNAME=dedicated-server \
+    PORT=19132 \
+    PORTV6=19133
 
 RUN apt-get -y update && apt-get -y install \
     sudo \

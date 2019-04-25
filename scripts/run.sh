@@ -25,8 +25,13 @@ function setServerProp {
   local prop=$1
   local var=$2
   if [ -n "$var" ]; then
-    echo "Setting $prop to $var"
-    sed -i "/$prop\s*=/ c $prop=$var" $MCPE_HOME/server.properties
+    if [[ -n $(grep -E "^${prop}.*?" $MCPE_HOME/server.properties) ]]; then
+      echo "Setting ${prop}=${var}"
+      sed -i "/$prop\s*=/ c $prop=$var" $MCPE_HOME/server.properties
+    else
+      echo "Adding ${prop}=${var}"
+      echo "${prop}=${var}" >> $MCPE_HOME/server.properties
+    fi
   fi
 }
 
@@ -58,6 +63,8 @@ if [ -f $MCPE_HOME/server.properties ]; then
   setServerProp "network-compression-threshold" "$NETWORK_COMPRESSION_THRESHOLD"
   setServerProp "allow-cheats" "$CHEATS"
   setServerProp "server-name" "$SERVERNAME"
+  setServerProp "server-port" "$PORT"
+  setServerProp "server-portv6" "$PORTV6"
 
   if [ -n "$MODE" ]; then
     case ${MODE,,?} in
