@@ -21,9 +21,17 @@ Here is a `docker run` command that will spin up a basic container with a few cu
 
 ## Additional Docker commands
 
+**kil and remove all docker containers**
 `docker kill $(docker ps -qa); docker rm $(docker ps -qa)`
 
+**docker logs**
 `docker logs mcpe1`
+
+**attach to the minecraft server console**
+`docker attach mcpe1`
+
+**exec into the container's bash console**
+`docker exec mcpe1 bash`
 
 ## Set selinux context for mounted volumes
 
