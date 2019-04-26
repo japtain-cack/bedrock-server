@@ -10,30 +10,46 @@ ENV MCPE_HOME=/minecraft
 ENV BRSRVDIR=bedrock-server-$VER
 ENV UID=1000
 ENV GUID=1000
-ENV LEVEL=world \
+
+# Bedrock server properties
+ENV MODE=0 \
+    DIFFICULTY=1 \
+    LEVELTYPE=default \
+    SERVERNAME="Dedicated Server" \
+    MAXPLAYERS=20 \
+    PORT=19132 \
+    PORTV6=19133 \
+    LEVELNAME=level \
+    SEED='' \
+    ONLINEMODE=false \
+    WHITELIST=false \
+    ALLOWCHEATS=false \
+    VIEWDISTANCE=10 \
+    PLAYERIDLETIMEOUT=30 \
+    MAXTHREADS=8 \
+    TICKDISTANCE=4 \
+    DEFAULTPLAYERPERMLEVEL=member \
+    TEXTUREPACKREQUIRED=false
+
+# Java server properties that may/may not be compatible
+ENV MOTD='Welcom to Minecraft' \
     PVP=true \
-    VDIST=10 \
-    OPPERM=4 \
+    OPPERMLEVEL=4 \
     NETHER=true \
     FLY=false \
-    MAXBHEIGHT=256 \
+    MAXBUILDHEIGHT=256 \
     NPCS=true \
-    WLIST=false \
     ANIMALS=true \
-    HC=false \
-    ONLINE=false \
-    RPACK='' \
-    DIFFICULTY=2 \
+    HARDCORE=false \
+    RESOURCEPACK='' \
+    RESOURCEPACKSHA1='' \
     CMDBLOCK=false \
-    MAXPLAYERS=20 \
     MONSTERS=true \
     STRUCTURES=true \
     SPAWNPROTECTION=16 \
-    MODE=0 \
-    CHEATS=false \
-    SERVERNAME=dedicated-server \
-    PORT=19132 \
-    PORTV6=19133
+    MAXTICKTIME=60000 \
+    MAXWORLDSIZE=29999984 \
+    NETWORKCOMPRESSIONTHRESHOLD=256
 
 RUN apt-get -y update && apt-get -y install \
     sudo \

@@ -29,36 +29,46 @@ Here is a `docker run` command that will spin up a basic container with a few cu
 
 `chcon -Rt svirt_sandbox_file_t /path/to/volume`
 
-## List of environment variables and their defaults
+## List of server properties and environment variables
 * UID=1000
 * GUID=1000
-* LEVEL=world
-* PVP=true
-* VDIST=10
-* OPPERM=4
-* NETHER=true
-* FLY=false
-* MAXBHEIGHT=256
-* NPCS=true
-* WLIST=false
-* ANIMALS=true
-* HC=false
-* ONLINE=false
-* RPACK=''
-* DIFFICULTY=3
-* CMDBLOCK=false
-* MAXPLAYERS=20
-* MONSTERS=true
-* STRUCTURES=true
-* SPAWNPROTECTION=16
-* MODE=0
-* CHEATS=false
-* SERVERNAME=dedicated-server
-* MOTD=''
-* LEVEL=''
-* SEED=''
-* MAX_TICK_TIME=''
-* MAX_WORLD_SIZE=''
-* RPACK_SHA1=''
-* NETWORK_COMPRESSION_THRESHOLD=''
 
+*Bedrock server properties*
+* "difficulty" "$DIFFICULTY"
+* "level-type" "$LEVELTYPE"
+* "server-name" "$SERVERNAME"
+* "max-players" "$MAXPLAYERS"
+* "server-port" "$PORT"
+* "server-portv6" "$PORTV6"
+* "level-name" "$LEVELNAME"
+* "level-seed" "$SEED"
+* "online-mode" "$ONLINEMODE"
+* "white-list" "$WHITELIST"
+* "allow-cheats" "$ALLOWCHEATS"
+* "view-distance" "$VIEWDISTANCE"
+* "player-idle-timeout" "$PLAYERIDLETIMEOUT"
+* "max-threads" "$MAXTHREADS"
+* "tick-distance" "$TICKDISTANCE"
+* "default-player-permission-level" "$DEFAULTPLAYERPERMLEVEL"
+* "texturepack-required" "$TEXTUREPACKREQUIRED"
+
+*Java server settings that may/may not be supported*
+* "motd" "$MOTD"
+* "pvp" "$PVP"
+* "op-permission-level" "$OPPERMLEVEL"
+* "allow-nether" "$NETHER"
+* "allow-flight" "$FLY"
+* "max-build-height" "$MAXBUILDHEIGHT"
+* "spawn-npcs" "$NPCS"
+* "spawn-animals" "$ANIMALS"
+* "hardcore" "$HARDCORE"
+* "resource-pack" "$RESOURCEPACK"
+* "enable-command-block" "$CMDBLOCK"
+* "spawn-monsters" "$MONSTERS"
+* "generate-structures" "$STRUCTURES"
+* "spawn-protection" "$SPAWNPROTECTION"
+* "max-tick-time" "$MAXTICKTIME"
+* "max-world-size" "$MAXWORLDSIZE"
+* "resource-pack-sha1" "$RESOURCEPACKSHA1"
+* "network-compression-threshold" "$NETWORKCOMPRESSIONTHRESHOLD"
+ 
