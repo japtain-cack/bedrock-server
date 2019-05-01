@@ -4,6 +4,9 @@
 echo "MCPE_HOME: $MCPE_HOME"
 echo "BRSRVDIR: $BRSRVDIR"
 
+# Delete empty files before copying to prevent overwriting existing configs.
+rm -f /tmp/${BRSRVDIR}/*.json
+
 # Copy game files to working dir
 cp -rf /tmp/${BRSRVDIR}/* ./ \
   && rm -rf /tmp/${BRSRVDIR} \
