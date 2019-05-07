@@ -32,24 +32,24 @@ ENV MODE=0 \
     TEXTUREPACKREQUIRED=false
 
 # Java server properties that may/may not be compatible
-ENV MOTD='Welcom to Minecraft' \
-    PVP=true \
-    OPPERMLEVEL=4 \
-    NETHER=true \
-    FLY=false \
-    MAXBUILDHEIGHT=256 \
-    NPCS=true \
-    ANIMALS=true \
-    HARDCORE=false \
-    RESOURCEPACK='' \
-    RESOURCEPACKSHA1='' \
-    CMDBLOCK=false \
-    MONSTERS=true \
-    STRUCTURES=true \
-    SPAWNPROTECTION=16 \
-    MAXTICKTIME=60000 \
-    MAXWORLDSIZE=29999984 \
-    NETWORKCOMPRESSIONTHRESHOLD=256
+#ENV MOTD='Welcom to Minecraft' \
+#    PVP=true \
+#    OPPERMLEVEL=4 \
+#    NETHER=true \
+#    FLY=false \
+#    MAXBUILDHEIGHT=256 \
+#    NPCS=true \
+#    ANIMALS=true \
+#    HARDCORE=false \
+#    RESOURCEPACK='' \
+#    RESOURCEPACKSHA1='' \
+#    CMDBLOCK=false \
+#    MONSTERS=true \
+#    STRUCTURES=true \
+#    SPAWNPROTECTION=16 \
+#    MAXTICKTIME=60000 \
+#    MAXWORLDSIZE=29999984 \
+#    NETWORKCOMPRESSIONTHRESHOLD=256
 
 RUN apt-get -y update && apt-get -y install \
     sudo \

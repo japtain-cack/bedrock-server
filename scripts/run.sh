@@ -102,10 +102,6 @@ else
   exit 1
 fi
 
-if [ -n "$OPS" -a ! -e $MCPE_HOME/ops.txt.converted ]; then
-  echo $OPS | awk -v RS=, '{print}' > $MCPE_HOME/ops.txt
-fi
-
 ./bedrock_server
 
 echo "code: $?"
