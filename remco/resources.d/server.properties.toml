@@ -1,0 +1,6 @@
+[[template]]
+  src = "${REMCO_TEMPLATE_DIR}/server.properties"
+  dst = "${MCPE_HOME}/server/server.properties"
+  make_directories = true
+  mode = "0644"
+

@@ -1,84 +1,77 @@
+# Build remco from specific commit
+##################################
+FROM golang
+
+ENV REMCO_VERSION v0.11.1
+
+# remco (lightweight configuration management tool) https://github.com/HeavyHorst/remco
+RUN go get github.com/HeavyHorst/remco/cmd/remco
+RUN cd $GOPATH/src/github.com/HeavyHorst/remco && \
+    git checkout ${REMCO_VERSION}
+RUN go install github.com/HeavyHorst/remco/cmd/remco
+
+# Build base container
+######################
 FROM ubuntu:bionic
 LABEL author="Nathan Snow"
 LABEL description="Minecraft Pocket Edition (Minecraft PE or Minecraft Bedrock) server"
+user root
 
-WORKDIR /minecraft
-ARG VER=1.11.0.23
-ENV REV=$VER
+ENV DEBIAN_FRONTEND noninteractive
+ENV TINI_VERSION v0.18.0
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+
+ARG BEDROCK_VERSION=1.11.0.23
+ENV BEDROCK_VERSION=$BEDROCK_VERSION
 ENV LD_LIBRARY_PATH=.
-ENV MCPE_HOME=/minecraft
-ENV BRSRVDIR=bedrock-server-$VER
+ENV MCPE_HOME=/home/minecraft
 ENV UID=1000
 ENV GUID=1000
 
-# Bedrock server properties
-ENV MODE=0 \
-    DIFFICULTY=1 \
-    LEVELTYPE=default \
-    SERVERNAME="Dedicated Server" \
-    MAXPLAYERS=20 \
-    PORT=19132 \
-    PORTV6=19133 \
-    LEVELNAME=level \
-    SEED='' \
-    ONLINEMODE=false \
-    WHITELIST=false \
-    ALLOWCHEATS=false \
-    VIEWDISTANCE=10 \
-    PLAYERIDLETIMEOUT=30 \
-    MAXTHREADS=8 \
-    TICKDISTANCE=4 \
-    DEFAULTPLAYERPERMLEVEL=member \
-    TEXTUREPACKREQUIRED=false
-
-# Java server properties that may/may not be compatible
-#ENV MOTD='Welcom to Minecraft' \
-#    PVP=true \
-#    OPPERMLEVEL=4 \
-#    NETHER=true \
-#    FLY=false \
-#    MAXBUILDHEIGHT=256 \
-#    NPCS=true \
-#    ANIMALS=true \
-#    HARDCORE=false \
-#    RESOURCEPACK='' \
-#    RESOURCEPACKSHA1='' \
-#    CMDBLOCK=false \
-#    MONSTERS=true \
-#    STRUCTURES=true \
-#    SPAWNPROTECTION=16 \
-#    MAXTICKTIME=60000 \
-#    MAXWORLDSIZE=29999984 \
-#    NETWORKCOMPRESSIONTHRESHOLD=256
-
-RUN apt-get -y update && apt-get -y install \
+RUN apt-get -y update && apt-get -y upgrade && apt-get -y install \
     sudo \
     unzip \
     curl \
     libcurl4 \
-    libssl1.0.0
+    libssl1.0.0 \
+    wget \
+    git \
+    gnupg2
 
 RUN groupadd -g $GUID minecraft && \
-    useradd -s /bin/bash -d /minecraft -m minecraft -u $UID -g minecraft && \
+    useradd -s /bin/bash -d /home/minecraft -m -u $UID -g minecraft minecraft && \
+    passwd -d minecraft && \
     usermod -aG sudo minecraft && \
     echo "minecraft ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/minecraft
 
-RUN curl https://minecraft.azureedge.net/bin-linux/bedrock-server-${VER}.zip --output /tmp/${BRSRVDIR}.zip && \
-    unzip /tmp/${BRSRVDIR}.zip -d /tmp/${BRSRVDIR} && \
-    chown -R minecraft:minecraft /tmp/${BRSRVDIR} && \
-    rm -fv /tmp/${BRSRVDIR}.zip
+# Add Tini (A tiny but valid init for containers) https://github.com/krallin/tini
+RUN wget -O /tini https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini && \
+    wget -O /tini.asc https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini.asc && \
+    gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 && \
+    gpg --batch --verify /tini.asc /tini && \
+    chmod +x /tini
 
-ADD ./scripts/run.sh /tmp/
-RUN chmod +x /tmp/run.sh
+RUN curl https://minecraft.azureedge.net/bin-linux/bedrock-server-${BEDROCK_VERSION}.zip --output /tmp/bedrock-server-${BEDROCK_VERSION}.zip && \
+    unzip /tmp/bedrock-server-${BEDROCK_VERSION}.zip -d /tmp/bedrock-server-${BEDROCK_VERSION} && \
+    chown -R minecraft:minecraft /tmp/bedrock-server-${BEDROCK_VERSION} && \
+    rm -fv /tmp/bedrock-server-${BEDROCK_VERSION}.zip
 
-VOLUME ["/minecraft"]
-
-USER minecraft
+COPY --from=0 /go/bin/remco /usr/local/bin/remco
+COPY --chown=minecraft:root remco /etc/remco
+RUN chmod -R 0775 etc/remco
 
 EXPOSE 19132/tcp
 EXPOSE 19132/udp
 EXPOSE 19133/tcp
 EXPOSE 19133/udp
 
-CMD trap 'exit' INT; /tmp/run.sh
+USER minecraft
+WORKDIR /home/minecraft
+VOLUME ["/home/minecraft/server"]
+
+COPY --chown=minecraft:minecraft files/entrypoint.sh ./
+RUN chmod +x ./entrypoint.sh
+
+ENTRYPOINT ["/tini", "--", "./entrypoint.sh"]
 
