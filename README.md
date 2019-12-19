@@ -51,7 +51,7 @@ Use this `docker run` command to launch a container with a few customized `serve
 ## List of server properties and environment variables
 
 **Override the bedrock server version (until I get auto-updates working)**
-* BEDROCK_VERSION=1.11.0.23
+* BEDROCK_VERSION=1.14.1.4
 
 **Set user and/or group id (optional)**
 * UID=1000
