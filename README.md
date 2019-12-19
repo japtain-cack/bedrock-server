@@ -18,7 +18,7 @@ It is also likely that you will want to customize your `server.properties` file.
 
 Use this `docker run` command to launch a container with a few customized `server.properties`.
 
- $ `docker run -d -it --name=mcpe1 -v /opt/mcpe/world1:/minecraft -p 19132-19133:19132-19133/udp -p 19132-19133:19132-19133/tcp -e ONLINEMODE=false -e ALLOWCHEATS=true -e SERVERNAME=mcpe.example.org nsnow/bedrock-server:latest`
+ $ `docker run -d -it --name=mcpe1 -v /opt/mcpe/world1:/home/minecraft/server -p 19132-19133:19132-19133/udp -p 19132-19133:19132-19133/tcp -e ONLINE-MODE=false -e ALLOW-CHEATS=true -e SERVER-NAME=mcpe.example.org nsnow/bedrock-server:latest`
 
 
 ## Additional Docker commands
@@ -54,42 +54,7 @@ Use this `docker run` command to launch a container with a few customized `serve
 * UID=1000
 * GUID=1000
 
-**Bedrock server properties**
-* "difficulty" "$DIFFICULTY"
-* "level-type" "$LEVELTYPE"
-* "server-name" "$SERVERNAME"
-* "max-players" "$MAXPLAYERS"
-* "server-port" "$PORT"
-* "server-portv6" "$PORTV6"
-* "level-name" "$LEVELNAME"
-* "level-seed" "$SEED"
-* "online-mode" "$ONLINEMODE"
-* "white-list" "$WHITELIST"
-* "allow-cheats" "$ALLOWCHEATS"
-* "view-distance" "$VIEWDISTANCE"
-* "player-idle-timeout" "$PLAYERIDLETIMEOUT"
-* "max-threads" "$MAXTHREADS"
-* "tick-distance" "$TICKDISTANCE"
-* "default-player-permission-level" "$DEFAULTPLAYERPERMLEVEL"
-* "texturepack-required" "$TEXTUREPACKREQUIRED"
-
-**Java server settings that may/may not be supported**
-* "motd" "$MOTD"
-* "pvp" "$PVP"
-* "op-permission-level" "$OPPERMLEVEL"
-* "allow-nether" "$NETHER"
-* "allow-flight" "$FLY"
-* "max-build-height" "$MAXBUILDHEIGHT"
-* "spawn-npcs" "$NPCS"
-* "spawn-animals" "$ANIMALS"
-* "hardcore" "$HARDCORE"
-* "resource-pack" "$RESOURCEPACK"
-* "enable-command-block" "$CMDBLOCK"
-* "spawn-monsters" "$MONSTERS"
-* "generate-structures" "$STRUCTURES"
-* "spawn-protection" "$SPAWNPROTECTION"
-* "max-tick-time" "$MAXTICKTIME"
-* "max-world-size" "$MAXWORLDSIZE"
-* "resource-pack-sha1" "$RESOURCEPACKSHA1"
-* "network-compression-threshold" "$NETWORKCOMPRESSIONTHRESHOLD"
+### Template server.properties
+use the following file for full environment variable reference
+`https://github.com/japtain-cack/bedrock-server/blob/master/remco/templates/server.properties`
  
