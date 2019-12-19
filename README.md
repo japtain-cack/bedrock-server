@@ -1,5 +1,5 @@
 # bedrock-server
-Run a bedrock server in a Docker container
+Run a bedrock server in a Docker container.
 
 [![Docker Automated build](https://img.shields.io/docker/automated/nsnow/bedrock-server.svg)](https://hub.docker.com/r/nsnow/bedrock-server)
 [![Docker Stars](https://img.shields.io/docker/stars/nsnow/bedrock-server.svg)](https://hub.docker.com/r/nsnow/bedrock-server)
@@ -58,7 +58,9 @@ Use this `docker run` command to launch a container with a few customized `serve
 * GUID=1000
 
 ### Template server.properties
-use the following file for full environment variable reference
+I've updated this project to use [Remco config management](https://github.com/HeavyHorst/remco). This allows for templatization of config files and options can be set using environment variables. This allows for easier deployments using most docker orchistration/management platforms including Kubernetes.
+
+Use the following file for full environment variable reference.
 
 https://github.com/japtain-cack/bedrock-server/blob/master/remco/templates/server.properties
  
