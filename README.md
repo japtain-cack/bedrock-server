@@ -56,5 +56,6 @@ Use this `docker run` command to launch a container with a few customized `serve
 
 ### Template server.properties
 use the following file for full environment variable reference
-`https://github.com/japtain-cack/bedrock-server/blob/master/remco/templates/server.properties`
+
+https://github.com/japtain-cack/bedrock-server/blob/master/remco/templates/server.properties
  
