@@ -22,7 +22,7 @@ ENV TINI_VERSION v0.18.0
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
-ARG BEDROCK_VERSION=1.14.1.4
+ARG BEDROCK_VERSION=
 ENV BEDROCK_VERSION=$BEDROCK_VERSION
 ENV LD_LIBRARY_PATH=.
 ENV MCPE_HOME=/home/minecraft
@@ -42,7 +42,6 @@ RUN apt-get -y update && apt-get -y upgrade && apt-get -y install \
 RUN groupadd -g $GUID minecraft && \
     useradd -s /bin/bash -d /home/minecraft -m -u $UID -g minecraft minecraft && \
     passwd -d minecraft && \
-    usermod -aG sudo minecraft && \
     echo "minecraft ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/minecraft
 
 # Add Tini (A tiny but valid init for containers) https://github.com/krallin/tini
@@ -51,11 +50,6 @@ RUN wget -O /tini https://github.com/krallin/tini/releases/download/${TINI_VERSI
     gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 && \
     gpg --batch --verify /tini.asc /tini && \
     chmod +x /tini
-
-RUN curl https://minecraft.azureedge.net/bin-linux/bedrock-server-${BEDROCK_VERSION}.zip --output /tmp/bedrock-server-${BEDROCK_VERSION}.zip && \
-    unzip /tmp/bedrock-server-${BEDROCK_VERSION}.zip -d /tmp/bedrock-server-${BEDROCK_VERSION} && \
-    chown -R minecraft:minecraft /tmp/bedrock-server-${BEDROCK_VERSION} && \
-    rm -fv /tmp/bedrock-server-${BEDROCK_VERSION}.zip
 
 COPY --from=0 /go/bin/remco /usr/local/bin/remco
 COPY --chown=minecraft:root remco /etc/remco
@@ -70,6 +64,7 @@ USER minecraft
 WORKDIR /home/minecraft
 VOLUME ["/home/minecraft/server"]
 
+COPY --chown=minecraft:minecraft files/get-version.sh ./
 COPY --chown=minecraft:minecraft files/entrypoint.sh ./
 RUN chmod +x ./entrypoint.sh
 
