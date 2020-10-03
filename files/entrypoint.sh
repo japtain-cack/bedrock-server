@@ -32,7 +32,7 @@ cp -rf ./bedrock-server-${BEDROCK_VERSION}/* $MCPE_HOME/server/ \
 # Ensure permissions are set then remove sudo access
 echo "Setting file permissions"
 chown -R minecraft:minecraft $MCPE_HOME \
-  && sudo rm -fv /etc/sudoers.d/minecraft \
+  #&& sudo rm -fv /etc/sudoers.d/minecraft \
 
 remco
 

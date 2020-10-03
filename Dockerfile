@@ -2,7 +2,7 @@
 ##################################
 FROM golang
 
-ENV REMCO_VERSION v0.11.1
+ENV REMCO_VERSION v0.12.0
 
 # remco (lightweight configuration management tool) https://github.com/HeavyHorst/remco
 RUN go get github.com/HeavyHorst/remco/cmd/remco
@@ -18,7 +18,7 @@ LABEL description="Minecraft Pocket Edition (Minecraft PE or Minecraft Bedrock) 
 user root
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV TINI_VERSION v0.18.0
+ENV TINI_VERSION v0.19.0
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
