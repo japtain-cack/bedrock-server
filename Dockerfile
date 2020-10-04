@@ -33,8 +33,6 @@ RUN apt-get -y update && apt-get -y upgrade && apt-get -y install \
     sudo \
     unzip \
     curl \
-    libcurl4 \
-    libssl1.0.0 \
     wget \
     git \
     gnupg2
