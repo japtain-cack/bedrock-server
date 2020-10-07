@@ -25,9 +25,9 @@ ENV LC_ALL C.UTF-8
 ARG BEDROCK_VERSION=
 ENV BEDROCK_VERSION=$BEDROCK_VERSION
 ENV LD_LIBRARY_PATH=.
-ENV MCPE_HOME=/home/minecraft
-ENV UID=1000
-ENV GUID=1000
+ENV MINECRAFT_HOME=/home/minecraft
+ENV MINECRAFT_UID=1000
+ENV MINECRAFT_UID=1000
 
 RUN apt-get -y update && apt-get -y upgrade && apt-get -y install \
     sudo \
@@ -37,8 +37,8 @@ RUN apt-get -y update && apt-get -y upgrade && apt-get -y install \
     git \
     gnupg2
 
-RUN groupadd -g $GUID minecraft && \
-    useradd -s /bin/bash -d /home/minecraft -m -u $UID -g minecraft minecraft && \
+RUN groupadd -g $MINECRAFT_UID minecraft && \
+    useradd -s /bin/bash -d /home/minecraft -m -u $MINECRAFT_UID -g minecraft minecraft && \
     passwd -d minecraft && \
     echo "minecraft ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/minecraft
 
