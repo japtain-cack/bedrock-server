@@ -10,7 +10,7 @@ echo "Current bedrock version: $BEDROCK_CURRENT_VERSION"
 echo "Bedrock server version set to: $BEDROCK_VERSION"
 echo
 
-sudo chown -R minecraft:minecraft ${MCPE_HOME}
+sudo chown -R minecraft:minecraft ${MINECRAFT_HOME}
 
 # Download and extract bedrock server package
 echo "Downloading and extracting server package"
@@ -21,20 +21,20 @@ curl -s https://minecraft.azureedge.net/bin-linux/bedrock-server-${BEDROCK_VERSI
 
 # Noclobber copy JSON files to prevent overwriting existing configs
 echo "Installing server files"
-cp -nv ./bedrock-server-${BEDROCK_VERSION}/*.json $MCPE_HOME/server/ \
+cp -nv ./bedrock-server-${BEDROCK_VERSION}/*.json $MINECRAFT_HOME/server/ \
   && rm -f ./bedrock-server-${BEDROCK_VERSION}/*.json
 
 # Copy game files to working dir
-cp -rf ./bedrock-server-${BEDROCK_VERSION}/* $MCPE_HOME/server/ \
-  && chmod +x $MCPE_HOME/server/bedrock_server \
+cp -rf ./bedrock-server-${BEDROCK_VERSION}/* $MINECRAFT_HOME/server/ \
+  && chmod +x $MINECRAFT_HOME/server/bedrock_server \
   && rm -rf ./bedrock-server-${BEDROCK_VERSION}
 
 # Ensure permissions are set then remove sudo access
 echo "Setting file permissions"
-chown -R minecraft:minecraft $MCPE_HOME \
+chown -R minecraft:minecraft $MINECRAFT_HOME \
   #&& sudo rm -fv /etc/sudoers.d/minecraft \
 
 remco
 
-cd $MCPE_HOME/server && ./bedrock_server
+cd $MINECRAFT_HOME/server && ./bedrock_server
 
