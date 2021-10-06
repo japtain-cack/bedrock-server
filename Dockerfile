@@ -6,9 +6,7 @@ ENV REMCO_VERSION v0.12.0
 
 # remco (lightweight configuration management tool) https://github.com/HeavyHorst/remco
 RUN go get github.com/HeavyHorst/remco/cmd/remco
-RUN cd $GOPATH/src/github.com/HeavyHorst/remco && \
-    git checkout ${REMCO_VERSION}
-RUN go install github.com/HeavyHorst/remco/cmd/remco
+RUN go install github.com/HeavyHorst/remco/cmd/remco@$REMCO_VERSION
 
 # Build base container
 ######################
