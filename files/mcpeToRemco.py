@@ -10,7 +10,7 @@ with open('server.properties', 'r') as fh:
         match = regex.search(line)
         if not re.match('^#.*|^\n|^/r', line):
             print(match)
-            data += (match.group(1) + "={{ getv(\"/minecraft/" + match.group(1).lower() + "\", \"" + match.group(2) + "\") }}" + "\n")
+            data += (match.group(1) + "={{ getv(\"/minecraft/" + match.group(1).lower().replace('-', '/') + "\", \"" + match.group(2) + "\") }}" + "\n")
         else:
             data += line
 
