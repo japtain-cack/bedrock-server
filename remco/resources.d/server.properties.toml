@@ -1,6 +1,8 @@
+# remco/resources.d/server.properties.toml
+
 [[template]]
-  src = "${REMCO_TEMPLATE_DIR}/server.properties"
-  dst = "${MINECRAFT_HOME}/server/server.properties"
+  src = "${REMCO_TEMPLATE_DIR}/server.properties.jinja"
+  dst = "${REMCO_OUTPUT_DIR}/server.properties"
   make_directories = true
   mode = "0644"
 

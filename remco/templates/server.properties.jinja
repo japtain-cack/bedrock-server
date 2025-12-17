@@ -1,0 +1,46 @@
+# remco/templates/server.properties.jinja
+
+# getv test
+{{ getv("/minecraft/server/name") }}
+
+# ls test
+{% for i in ls("/minecraft") %}
+{{ i }}
+{% endfor %}
+
+# lsdir test
+{% for i in lsdir("/minecraft") %}
+{{ i }}
+{% endfor %}
+
+# gets test /*
+{% for kv in gets("/*") %}
+{{ kv.Key}}={{ kv.Value }}
+{% endfor %}
+
+# gets test /minecraft/*
+{% for kv in gets("/minecraft/*") %}
+{{ kv.Key}}={{ kv.Value }}
+{% endfor %}
+
+# gets test /minecraft/*/*
+{% for kv in gets("/minecraft/*/*") %}
+{{ kv.Key}}={{ kv.Value }}
+{% endfor %}
+
+# prefix tests "prefix = "/minecraft" or "MINECRAFT_" or "MINECRAFT" (fails when prefix is enabled)
+{% for kv in gets("/server/*") %}
+{{ kv.Key}}={{ kv.Value }}
+{% endfor %}
+
+# outside keys test
+{% for kv in gets("/remco/*") %}
+{{ kv.Key}}={{ kv.Value }}
+{% endfor %}
+
+{% macro render_node(path) %}
+    {% set children = ls(path) %}
+    {{ children }}
+{% endmacro %}
+
+{% render_node("/minecraft") %}

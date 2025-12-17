@@ -1,0 +1,10 @@
+# remco/config
+
+retries = 0
+include_dir = "${REMCO_RESOURCE_DIR}"
+log_level = "debug"
+
+[default_backends]
+[default_backends.env]
+    onetime = true
+    keys = ["/minecraft"]
