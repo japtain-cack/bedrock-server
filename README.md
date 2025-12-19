@@ -1,23 +1,29 @@
 # bedrock-server
-Run a bedrock server in a Docker container.
+Run a Minecraft Bedrock server in a Docker container.
 
-Now with automatic bedrock server updates and remco config management. Just restart the container.
+Now with automatic bedrock server updates and envforge config management. Just restart the container.
 
 [![Docker Automated build](https://img.shields.io/docker/automated/nsnow/bedrock-server.svg)](https://hub.docker.com/r/nsnow/bedrock-server)
 [![Docker Stars](https://img.shields.io/docker/stars/nsnow/bedrock-server.svg)](https://hub.docker.com/r/nsnow/bedrock-server)
 [![Docker Pulls](https://img.shields.io/docker/pulls/nsnow/bedrock-server.svg)](https://hub.docker.com/r/nsnow/bedrock-server)
 [![Docker Build Status](https://img.shields.io/docker/build/nsnow/bedrock-server.svg)](https://hub.docker.com/r/nsnow/bedrock-server/builds)
 
+## Features
+
+- **Multi-stage build** for optimized image size
+- **Automatic version detection** using Puppeteer or shell scripts
+- **Configuration templating** with envforge
+- **Non-root execution** for better security
+- **Health checks** for container monitoring
+- **Automatic updates** - just restart to get the latest Minecraft version
+
+## Important Notes
 
 This Dockerfile will download the Bedrock Server app and set it up, along with its dependencies.
 
-If you run the container as is, the `worlds` directory will be created inside the container, which is inadvisable.
-It is highly recommended that you store your worlds outside the container using a mount (see the example below).
-Ensure that your file system permissions are correct, `chown 1000:1000 mount/path`, or modify the UID/GUID variables as needed (see below).
+**Data Persistence**: If you run the container as is, the `worlds` directory will be created inside the container, which is inadvisable. It is highly recommended that you store your worlds outside the container using a mount (see the example below). Ensure that your file system permissions are correct, `chown 1000:1000 mount/path`, or modify the UID/GID variables as needed (see below).
 
-It is also likely that you will want to customize your `server.properties` file.
-To do this, use the `-e <environment var>=<value>` for each setting in the `server.properties`.
-The `server.properties` file will be overwritten every time the container is launched.
+**Configuration**: You can customize your `server.properties` file using environment variables. The `server.properties` file will be regenerated from templates every time the container is launched, allowing for dynamic configuration.
 
 
 ## Run the server
@@ -81,20 +87,41 @@ To update, simply set the new version number and restart your container!
 * `MINECRAFT_GUID=1000`
 
 ### Template server.properties
-Use [this file](https://github.com/japtain-cack/bedrock-server/blob/master/remco/templates/server.properties)
-for the full environment variable reference.
- 
-This project uses [Remco config management](https://github.com/HeavyHorst/remco).
+Use [this file](https://github.com/japtain-cack/bedrock-server/blob/master/files/server.properties)
+for the full server.properties reference.
+
+This project uses [EnvForge config management](https://gitlab.com/envforge/envforge).
 This allows for templatization of config files and options can be set using environment variables.
-This allows for easier deployments using most docker orchistration/management platforms including Kubernetes.
+This allows for easier deployments using most docker orchestration/management platforms including Kubernetes.
 
-The remco tempate uses keys. This means you should see a string like `"/minecraft/some-option"` within the `getv()` function.
-This directly maps to a environment variable, the `/` becomes an underscore basically. The other value in the `getv()` function is the default value.
-For instance, `"/minecraft/some-option"` will map to the environment variable `MINECRAFT_SOME-OPTION`.
+The envforge template uses environment variables with the prefix `/minecraft/`. These map directly to environment variables where `/` becomes an underscore. For example, `/minecraft/server-name` maps to the environment variable `MINECRAFT_SERVER-NAME`.
 
-`getv("/minecraft/some-option", "default-value")`
+Environment variables are processed as follows:
+- `/minecraft/server-name` → `MINECRAFT_SERVER-NAME`
+- `/minecraft/gamemode` → `MINECRAFT_GAMEMODE`
+- `/minecraft/difficulty` → `MINECRAFT_DIFFICULTY`
 
-becomes
+So you can set:
 
-`docker run -e MINECRAFT_SOME-OPTION=my-value ...`
+```bash
+docker run -e MINECRAFT_SERVER-NAME="My Awesome Server" \
+           -e MINECRAFT_GAMEMODE=creative \
+           -e MINECRAFT_DIFFICULTY=hard \
+           nsnow/bedrock-server:latest
+```
 
+### Available Configuration Options
+
+Common server.properties options that can be configured via environment variables:
+
+- `MINECRAFT_SERVER-NAME` - Server display name
+- `MINECRAFT_GAMEMODE` - Game mode (survival/creative/adventure)
+- `MINECRAFT_DIFFICULTY` - World difficulty (peaceful/easy/normal/hard)
+- `MINECRAFT_MAX-PLAYERS` - Maximum number of players
+- `MINECRAFT_ONLINE-MODE` - Xbox Live authentication (true/false)
+- `MINECRAFT_ALLOW-CHEATS` - Enable cheats (true/false)
+- `MINECRAFT_WHITE-LIST` - Enable whitelist (true/false)
+- `MINECRAFT_SERVER-PORT` - Server port (default: 19132)
+- `MINECRAFT_VIEW-DISTANCE` - View distance in chunks
+- `MINECRAFT_LEVEL-NAME` - World name
+- `MINECRAFT_LEVEL-SEED` - World seed

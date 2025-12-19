@@ -1,0 +1,24 @@
+{
+  "name": "bedrock-server",
+  "version": "1.0.0",
+  "description": "Run a bedrock server in a Docker container.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/japtain-cack/bedrock-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/japtain-cack/bedrock-server/issues"
+  },
+  "homepage": "https://github.com/japtain-cack/bedrock-server#readme",
+  "dependencies": {
+    "puppeteer": "^24.33.1"
+  }
+}

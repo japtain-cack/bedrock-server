@@ -1,40 +1,155 @@
-#!/usr/bin/env bash
+#!/bin/bash
+# Minecraft Bedrock Server Entrypoint Script
+# Designed to run in userspace as the minecraft user
 
-export REMCO_HOME=/etc/remco
-export REMCO_RESOURCE_DIR=${REMCO_HOME}/resources.d
-export REMCO_TEMPLATE_DIR=${REMCO_HOME}/templates
-export BEDROCK_CURRENT_VERSION=$(./get-version.sh)
-export BEDROCK_VERSION=${BEDROCK_VERSION:-$BEDROCK_CURRENT_VERSION}
+set -euo pipefail
 
-echo "Current bedrock version: $BEDROCK_CURRENT_VERSION"
-echo "Bedrock server version set to: $BEDROCK_VERSION"
-echo
+# Configuration
+readonly SCRIPT_DIR="/app"
+readonly MINECRAFT_HOME="${MINECRAFT_HOME:-/app/data}"
+readonly SERVER_DIR="${MINECRAFT_HOME}"
 
-sudo chown -R minecraft:minecraft ${MINECRAFT_HOME}
+# Logging functions
+log_info() {
+    echo "[INFO] $*"
+}
 
-# Download and extract bedrock server package
-echo "Downloading and extracting server package"
-curl -s https://minecraft.azureedge.net/bin-linux/bedrock-server-${BEDROCK_VERSION}.zip --output ./bedrock-server-${BEDROCK_VERSION}.zip && \
-  unzip -q ./bedrock-server-${BEDROCK_VERSION}.zip -d ./bedrock-server-${BEDROCK_VERSION} && \
-  chown -R minecraft:minecraft ./bedrock-server-${BEDROCK_VERSION} && \
-  rm -f ./bedrock-server-${BEDROCK_VERSION}.zip
+log_error() {
+    echo "[ERROR] $*" >&2
+}
 
-# Noclobber copy JSON files to prevent overwriting existing configs
-echo "Installing server files"
-cp -nv ./bedrock-server-${BEDROCK_VERSION}/*.json $MINECRAFT_HOME/server/ \
-  && rm -f ./bedrock-server-${BEDROCK_VERSION}/*.json
+# Validate environment
+validate_environment() {
+    if [[ ! -f "${SCRIPT_DIR}/get_version.js" ]]; then
+        log_error "Version detection script not found: ${SCRIPT_DIR}/get_version.js"
+        exit 1
+    fi
 
-# Copy game files to working dir
-cp -rf ./bedrock-server-${BEDROCK_VERSION}/* $MINECRAFT_HOME/server/ \
-  && chmod +x $MINECRAFT_HOME/server/bedrock_server \
-  && rm -rf ./bedrock-server-${BEDROCK_VERSION}
+    if [[ ! -f "${SCRIPT_DIR}/templates/envforge.yaml" ]]; then
+        log_error "Configuration template not found: ${SCRIPT_DIR}/templates/envforge.yaml"
+        exit 1
+    fi
+}
 
-# Ensure permissions are set then remove sudo access
-echo "Setting file permissions"
-chown -R minecraft:minecraft $MINECRAFT_HOME \
-  #&& sudo rm -fv /etc/sudoers.d/minecraft \
+# Get Bedrock version
+get_bedrock_version() {
+    local current_version
 
-remco
+    log_info "Detecting latest Bedrock server version..."
+    if ! current_version=$(node "${SCRIPT_DIR}/get_version.js" 2>/dev/null); then
+        log_error "Failed to detect Bedrock version using Node.js script"
+        exit 1
+    fi
 
-cd $MINECRAFT_HOME/server && ./bedrock_server
+    echo "$current_version"
+}
 
+# Create necessary directories
+setup_directories() {
+    log_info "Setting up directories..."
+    mkdir -p "$SERVER_DIR"
+}
+
+# Download and extract Bedrock server
+download_bedrock_server() {
+    local version="$1"
+    local zip_file="./bedrock-server-${version}.zip"
+    local extract_dir="./bedrock-server-${version}"
+
+    log_info "Downloading Bedrock server v${version}..."
+
+    # Download with retry logic
+    local max_retries=3
+    local retry_count=0
+
+    while [[ $retry_count -lt $max_retries ]]; do
+        if curl -L --fail --silent --show-error \
+               "https://minecraft.azureedge.net/bin-linux/bedrock-server-${version}.zip" \
+               --output "$zip_file"; then
+            break
+        fi
+
+        retry_count=$((retry_count + 1))
+        log_info "Download failed, retrying... ($retry_count/$max_retries)"
+        sleep 2
+    done
+
+    if [[ ! -f "$zip_file" ]]; then
+        log_error "Failed to download Bedrock server after $max_retries attempts"
+        exit 1
+    fi
+
+    log_info "Extracting server files..."
+    if ! unzip -q "$zip_file" -d "$extract_dir"; then
+        log_error "Failed to extract Bedrock server archive"
+        rm -f "$zip_file"
+        exit 1
+    fi
+
+    # Clean up zip file to save space
+    rm -f "$zip_file"
+
+    echo "$extract_dir"
+}
+
+# Install server files
+install_server_files() {
+    local extract_dir="$1"
+
+    log_info "Installing server configuration files..."
+    # Copy JSON files without overwriting existing configs
+    find "$extract_dir" -name "*.json" -exec cp -nv {} "$SERVER_DIR/" \; -exec rm -f {} \;
+
+    log_info "Installing server binaries..."
+    # Copy remaining files
+    cp -rf "$extract_dir"/* "$SERVER_DIR/"
+
+    # Ensure server binary is executable
+    chmod +x "$SERVER_DIR/bedrock_server"
+
+    # Clean up extraction directory
+    rm -rf "$extract_dir"
+}
+
+# Render configuration templates
+render_configuration() {
+    log_info "Rendering server configuration..."
+    if ! envforge render -c "${SCRIPT_DIR}/templates/envforge.yaml"; then
+        log_error "Failed to render configuration templates"
+        exit 1
+    fi
+}
+
+# Main execution
+main() {
+    log_info "Starting Minecraft Bedrock Server initialization..."
+
+    validate_environment
+
+    # Get version information
+    local current_version
+    current_version=$(get_bedrock_version)
+    local target_version="${BEDROCK_VERSION:-$current_version}"
+
+    log_info "Current Bedrock version: $current_version"
+    log_info "Target server version: $target_version"
+
+    # Setup and installation
+    setup_directories
+
+    local extract_dir
+    extract_dir=$(download_bedrock_server "$target_version")
+    install_server_files "$extract_dir"
+
+    render_configuration
+
+    # Start the server
+    log_info "Starting Minecraft Bedrock server..."
+    cd "$SERVER_DIR"
+
+    # Execute server with proper signal handling
+    exec ./bedrock_server
+}
+
+# Run main function
+main "$@"

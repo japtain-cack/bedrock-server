@@ -1,0 +1,12 @@
+global:
+  logging: info
+  polling_rate: 1.0
+prefixes:
+  - prefix: "/minecraft"
+    strip: true
+templates:
+  - source: "templates/server.properties.mako"
+    destination: "/app/data/server.properties"
+    watch: false
+    mode: "0644"
+    make_dirs: true
